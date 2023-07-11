@@ -1,5 +1,103 @@
-template-repository (1.0-1) unstable; urgency=medium
+python-mailer (0.8.1-6) unstable; urgency=medium
 
-  * Initial release
+  * Team upload
+  * Fix removal of 2to3 in setup.py
+  * Bump Standards-Version to 4.6.1
+  * Set Rules-Requires-Root: no
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Benjamin Drung <bdrung@debian.org>  Tue, 13 Dec 2022 15:12:04 +0100
+
+python-mailer (0.8.1-5) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Bump Standards-Version to 4.4.1.
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Debian Janitor ]
+  * Bump debhelper from old 11 to 13.
+  * Update standards version to 4.5.1, no changes needed.
+
+  [ Sandro Tosi ]
+  * debian/patches/dont-use-2to3.patch
+    - dont use 2to3 in setup.py; Closes; #997619
+
+ -- Sandro Tosi <morph@debian.org>  Mon, 20 Jun 2022 13:25:53 -0400
+
+python-mailer (0.8.1-4) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Ondřej Nový ]
+  * Use debhelper-compat instead of debian/compat.
+  * Bump Standards-Version to 4.4.0.
+
+  [ Andrey Rahmatullin ]
+  * Drop Python 2 support.
+
+ -- Andrey Rahmatullin <wrar@debian.org>  Tue, 13 Aug 2019 23:24:02 +0500
+
+python-mailer (0.8.1-3) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Set Vcs-* to salsa.debian.org
+  * d/control: Deprecating priority extra as per policy 4.0.1
+  * d/control: Remove trailing whitespaces
+  * d/control: Remove ancient X-Python-Version field
+  * d/control: Remove ancient X-Python3-Version field
+
+  [ Hugo Lefeuvre ]
+  * debian/control:
+    - Bump Standards-Version to 4.3.0.
+    - Depend on debhelper >= 11.
+    - Add Testsuite: autopkgtest-pkg-python stanza.
+  * Set compatibility number to 11.
+  * debian/copyright:
+    - Update copyright years.
+  * Do not build verbose.
+  * debian/watch:
+    - Bump version to 4.
+    - Use HTTPS protocol.
+
+ -- Hugo Lefeuvre <hle@debian.org>  Tue, 05 Feb 2019 19:12:48 +0100
+
+python-mailer (0.8.1-2) unstable; urgency=medium
+
+  * Upload to unstable.
+
+ -- Hugo Lefeuvre <hle@debian.org>  Mon, 12 Sep 2016 21:27:44 +0200
+
+python-mailer (0.8.1-1) experimental; urgency=low
+
+  * New upstream release.
+  * New Maintainer (DPMT) and Uploader (Hugo Lefeuvre).
+  * debian/control:
+    - Bump Standards-Version to 3.9.8.
+    - Depend on debhelper >= 9.
+    - Build a python3 binary package. Add needed Build-Dependencies.
+    - Update Homepage field to use protocol HTTPS.
+    - Add Vcs-* fields.
+  * debian/rules:
+    - Use pybuild.
+  * Set compatibility number to 9.
+  * debian/copyright:
+    - Make debian/copyright DEP5 compliant.
+    - Update copyright years.
+    - Add a new field for Hugo Lefeuvre.
+    - Update Source field to use protocol HTTPS.
+
+ -- Hugo Lefeuvre <hle@debian.org>  Fri, 19 Aug 2016 12:48:04 +0200
+
+python-mailer (0.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- David Watson <dwatson@debian.org>  Sun, 07 Aug 2011 21:28:32 +0100
+
+python-mailer (0.5-1) unstable; urgency=low
+
+  * Initial release (Closes: #588319)
+
+ -- David Watson <dwatson@debian.org>  Wed, 07 Jul 2010 11:06:21 +0100
