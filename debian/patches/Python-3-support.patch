@@ -1,0 +1,182 @@
+From: Benjamin Drung <benjamin.drung@canonical.com>
+Date: Tue, 13 Dec 2022 15:06:02 +0100
+Subject: Python 3 support
+
+Do not run 2to3 in `setup.py`. Instead run it once:
+
+```
+2to3 -w mailer.py
+```
+
+Signed-off-by: Benjamin Drung <benjamin.drung@canonical.com>
+---
+ mailer.py | 37 ++++++++++++++++++-------------------
+ setup.py  |  5 -----
+ 2 files changed, 18 insertions(+), 24 deletions(-)
+
+diff --git a/mailer.py b/mailer.py
+index 1aa8e94..f391503 100644
+--- a/mailer.py
++++ b/mailer.py
+@@ -29,11 +29,10 @@ Sample code:
+     sender.send(message)
+ 
+ """
+-from __future__ import with_statement
+ import smtplib
+ import socket
+ import threading
+-import Queue
++import queue
+ import uuid
+ 
+ # this is to support name changes
+@@ -131,28 +130,28 @@ class Mailer(object):
+         we created in send()
+         """
+         me = msg.From
+-        if isinstance(msg.To, basestring):
++        if isinstance(msg.To, str):
+             to = [msg.To]
+         else:
+             to = list(msg.To)
+ 
+         cc = []
+         if msg.CC:
+-            if isinstance(msg.CC, basestring):
++            if isinstance(msg.CC, str):
+                 cc = [msg.CC]
+             else:
+                 cc = list(msg.CC)
+ 
+         bcc = []
+         if msg.BCC:
+-            if isinstance(msg.BCC, basestring):
++            if isinstance(msg.BCC, str):
+                 bcc = [msg.BCC]
+             else:
+                 bcc = list(msg.BCC)
+ 
+         rto = []
+         if msg.RTo:
+-            if isinstance(msg.RTo, basestring):
++            if isinstance(msg.RTo, str):
+                 rto = [msg.RTo]
+             else:
+                 rto = list(msg.RTo)
+@@ -197,7 +196,7 @@ class Message(object):
+         attachments = params.get('attachments', None)
+         if attachments:
+             for attachment in attachments:
+-                if isinstance(attachment, basestring):
++                if isinstance(attachment, str):
+                     self.attachments.append((attachment, None, None, None, None))
+                 else:
+                     try:
+@@ -216,14 +215,14 @@ class Message(object):
+         self.CC         = params.get('cc', None)
+         self.BCC        = params.get('bcc', None)
+         self.From       = params.get('from', None) # string or iterable
+-        self.Subject    = params.get('subject', u'') # string
++        self.Subject    = params.get('subject', '') # string
+         self.Body       = params.get('body', None)
+         self.Html       = params.get('html', None)
+         self.Date       = params.get('date', time.strftime("%a, %d %b %Y %H:%M:%S %z", time.gmtime()))
+         self.charset    = params.get('charset', 'us-ascii')
+         self.Headers    = params.get('headers', {})
+ 
+-        if isinstance(self.Body, unicode):
++        if isinstance(self.Body, str):
+             self.Body = self.Body.encode(self.charset)
+ 
+         self.message_id = self.make_key()
+@@ -273,34 +272,34 @@ class Message(object):
+             msg['From'] = self.From
+ 
+         else:
+-            if isinstance(self.Subject, unicode):
++            if isinstance(self.Subject, str):
+                 subject = self.Subject
+             else:
+-                subject = unicode(self.Subject, self.charset)
++                subject = str(self.Subject, self.charset)
+             msg['Subject'] = str(make_header([(subject, self.charset)]))
+ 
+-            if isinstance(self.From, unicode):
++            if isinstance(self.From, str):
+                 from_ = self.From
+             else:
+-                from_ = unicode(self.From, self.charset)
++                from_ = str(self.From, self.charset)
+             msg['From'] = str(make_header([(from_, self.charset)]))
+ 
+ 
+-        if isinstance(self.To, basestring):
++        if isinstance(self.To, str):
+             msg['To'] = self.To
+         else:
+             self.To = list(self.To)
+             msg['To'] = ", ".join(self.To)
+ 
+         if self.RTo:
+-            if isinstance(self.RTo, basestring):
++            if isinstance(self.RTo, str):
+                 msg.add_header('reply-to', self.RTo)
+             else:
+                 self.RTo = list(self.RTo)
+                 msg.add_header('reply-to', ", ".join(self.RTo))
+ 
+         if self.CC:
+-            if isinstance(self.CC, basestring):
++            if isinstance(self.CC, str):
+                 msg['CC'] = self.CC
+             else:
+                 self.CC = list(self.CC)
+@@ -308,7 +307,7 @@ class Message(object):
+ 
+ 
+         if self.BCC:
+-            if isinstance(self.BCC, basestring):
++            if isinstance(self.BCC, str):
+                 msg['BCC'] = self.BCC
+             else:
+                 self.BCC = list(self.BCC)
+@@ -316,7 +315,7 @@ class Message(object):
+ 
+ 
+         if self.Headers:
+-            for key, value in self.Headers.items():
++            for key, value in list(self.Headers.items()):
+                 msg[key] = str(value).encode(self.charset)
+ 
+ 
+@@ -420,7 +419,7 @@ class Manager(threading.Thread):
+     def __init__(self, mailer=None, callback=None, **kwargs):
+         threading.Thread.__init__(self)
+ 
+-        self.queue = Queue.Queue()
++        self.queue = queue.Queue()
+         self.mailer = mailer
+         self.abort = False
+         self.callback = callback
+diff --git a/setup.py b/setup.py
+index 60030cd..a487083 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,10 +1,6 @@
+ from setuptools import setup
+ import sys
+ 
+-extra = {}
+-if sys.version_info >= (3, 0):
+-    extra.update(use_2to3=True)
+-
+ setup(
+     name='mailer',
+     version="0.8.1",
+@@ -24,5 +20,4 @@ setup(
+         'Programming Language :: Python',
+         'Programming Language :: Python :: 3',
+     ],
+-    **extra
+ )

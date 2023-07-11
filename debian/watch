@@ -1,0 +1,3 @@
+version=4
+# Current version from Python cheeseshop.
+https://pypi.python.org/packages/source/m/mailer/mailer-(.+).zip
